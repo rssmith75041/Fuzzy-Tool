@@ -16,3 +16,5 @@ Over the years that original software evolved through multiple revi-sions, exper
 This project is not intended to be a comprehensive academic treat-ment of fuzzy logic. Entire libraries already exist for that purpose. Instead, this project serves as a practical introduction written from the perspective of someone who learned fuzzy logic by building it.
 
 The goal is to understand what fuzzy logic is, why it works, and how it can be implemented in software. If you can understand how people make decisions using terms such as "a little," "somewhat," or "very," then you already under-stand the foundation upon which fuzzy logic is built.
+
+The code is not perfect, but works, and it needs work, but it is a starting point to learn.
