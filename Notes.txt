@@ -1,0 +1,562 @@
+﻿//r = parser.X_Evaluate(formula, ref answer);
+//r = parser.X_Evaluate(formula, ref answer2);
+
+---------------------------------------------------------------------------------
+When 3 state ->
+        string[] eqs = { "1X2", "-0.5X1 - 0.3X2 + 2*(SIN(X3) - X1)", "0.05" };
+        float[] initial = { 5f, 0f, 21.77f };
+
+CurrentState[0] → now
+CurrentState[1] → last tick
+CurrentState[2] → two ticks ago
+---------------------------------------------------------------------------------
+To make the controller respond rapidly, you increase the weights for:
+
+Large Error categories (E_PL, E_PM, E_NM, E_NL)
+Makes the controller react strongly when error is big.
+
+Large dError categories (dE_PL, dE_PM, dE_NM, dE_NL)
+Makes the controller react strongly when error is changing fast.
+
+Small Zero weight (E_ZE, dE_ZE)
+Reduces hesitation around zero, making transitions snappier.
+
+Strong response to large error (E)
+If you want fast correction:
+
+E_PL (Positive Large) → increase
+E_PM (Positive Medium) → increase
+E_NM (Negative Medium) → increase
+E_NL (Negative Large) → increase
+
+These weights make the controller “jump” harder when the error is big.
+
+Recommended rapid‑response values (E):
+E_NL = 2.0–3.0  
+E_NM = 1.5–2.5  
+E_NS = 1.0–1.5  
+E_ZE = 0.8  
+E_PS = 1.0–1.5  
+E_PM = 1.5–2.5  
+E_PL = 2.0–3.0
+
+Strong response to fast‑changing error (dE)
+This is your damping aggressiveness.
+
+If you want rapid control:
+dE_PL → increase
+dE_PM → increase
+dE_NM → increase
+dE_NL → increase
+
+These weights make the controller react quickly when the system is accelerating toward or away from the target.
+
+
+Recommended rapid‑response values (d):
+dE_NL = 2.0  
+dE_NM = 1.5  
+dE_NS = 1.2  
+dE_ZE = 0.8  
+dE_PS = 1.2  
+dE_PM = 1.5  
+dE_PL = 2.0
+
+
+What NOT to increase
+If you want rapid control, do NOT increase:
+
+E_ZE
+This makes the controller “sticky” around zero → slower response.
+
+dE_ZE
+This makes the controller sluggish when the error is steady.
+
+Any weight above 5.0
+You’ll get oscillation and instability.
+
+
+The clean formula for rapid control
+If you want a simple rule:
+
+Increase weights for large categories
+(NL, NM, PM, PL)
+
+Decrease weights for zero categories
+(ZE)
+
+Keep small categories near 1.0
+(NS, PS)
+
+This gives you:
+fast correction
+fast damping
+minimal hesitation
+controlled overshoot
+
+
+Example preset: “Rapid Response”
+Here’s a preset that will make your controller snappy:
+
+Error (E)
+NL = 2.5  
+NM = 2.0  
+NS = 1.2  
+ZE = 0.8  
+PS = 1.2  
+PM = 2.0  
+PL = 2.5
+
+
+dError (dE)
+NL = 2.0  
+NM = 1.5  
+NS = 1.2  
+ZE = 0.8  
+PS = 1.2  
+PM = 1.5  
+PL = 2.0
+
+This is a fast, aggressive, responsive controller.
+
+
+
+If you want, I can also give you:
+A Smooth preset
+A Balanced preset
+A PID‑like preset
+A High‑damping preset
+A Low‑overshoot preset
+A High‑precision preset
+
+
+
+When all X_Weights = 1.0, the controller behaves as a pure, normal fuzzy logic system.
+The structure:
+
+When all X_Weights = 1.0 → 100% standard fuzzy behavior
+Because the membership strengths are multiplied like this:
+
+μ_weighted = μ * weight
+
+If every weight is:
+
+1.0
+
+Then:
+
+μ_weighted = μ * 1.0 = μ
+
+Meaning:
+No category is boosted
+No category is weakened
+No category is suppressed
+No category is emphasized
+No tuning is applied
+
+This is the baseline, the reference, the pure fuzzy controller.
+
+
+Why 1.0 = normal behavior
+Because weights are multipliers, not values.
+A weight of 1.0 means “leave this category unchanged”
+A weight of 0.5 means “cut this category’s influence in half”
+A weight of 2.0 means “double this category’s influence”
+A weight of 0.0 means “disable this category entirely”
+
+So:
+All 1.0 → pure fuzzy
+Anything else → tuned fuzzy
+
+This is why X_Weights are optional. Your controller already works perfectly without them.
+X_Weights simply allow:
+faster response
+slower response
+more damping
+less damping
+more aggressive correction
+smoother correction
+custom behavior shaping
+
+But the default is always:
+
+[1, 1, 1, 1, 1, 1, 1] for E
+[1, 1, 1, 1, 1, 1, 1] for dE
+
+This also means:
+If the user never touches X_Weights → controller behaves normally
+If the user adjusts X_Weights → controller becomes tuned
+If the user resets X_Weights → controller returns to pure fuzzy
+
+This is exactly how a professional fuzzy controller should behave.
+
+If you want, I can give you:
+A “Reset to Normal Fuzzy” button
+A “Rapid Response” preset
+A “Smooth Response” preset
+A “High Damping” preset
+A “PID‑like” preset
+
+---------------------------------------------------------------------------------
+
+Other projects
+
+
+
+
+### Recommended alternative plant models to try (comparison)
+| **Model**                     | **Complexity** | **Why try it**                                                        | **Typical equation**                                                                         | **Recommended V range** |
+| ----------------------------- | -------------- | --------------------------------------------------                    | -------------------------------------------------------------------------------------------- | ----------------------- |
+| **First‑order thermal RC**    | Low            | Closest to real heater; easy to tune and interpret                    | X' = -a * (X - T_amb) + k * V                                                                | **±100**                |
+| **Two‑state thermal inertia** | Medium         | Captures sensor lag and thermal mass; tests multi‑state fuzzy control | X1' = -c * (X1 - X2) + k * V;  X2' = -d * (X2 - T_amb)                                       | **±200**                |
+| **Pure integrator test**      | Very low       | Fast sanity check that V reaches the plant and is applied linearly    | X' = V                                                                                       | **±1000**               |
+| **Damped second‑order**       | Medium         | Exercises derivative handling and oscillatory response                | Represent as two first‑order states: X1' = X2; X2' = -2*zeta*omega*X2 - omega^2 * X1 + k * V | **±200**                |
+| **Saturating actuator test**  | Low            | Verifies clamping, scaling, and saturation behavior end‑to‑end        | X' = -b * X + sat(V, V_min, V_max)                                                           | **±300**                |
+---
+
+### Why these help (short)
+- **First‑order RC** isolates the controller ↔ plant gain and sign issues. If fuzzy V changes and the state responds, wiring is correct.  
+- **Two‑state inertia** shows whether your controller handles internal delays and whether you’re using the right state indices.  
+- **Integrator** proves the integrator and V path: if forcing V moves X exactly by \(V\cdot h\), the plant wiring is correct.  
+- **Damped second‑order** tests derivative terms and whether your dError handling is correct.  
+- **Saturating actuator** reveals scaling/clamping bugs and whether CategoryValues are large enough.
+
+---
+
+### Concrete parameter suggestions and fuzzy front end to use (drop‑in)
+Use the **same fuzzy front end** for all tests so you can compare behavior. These values are conservative and work with the tool you already used for the sine test.
+
+**Fuzzy front end (recommended)**
+- **FuzzySet** (7 rows NL..PL) — tuned to the expected error scale; copy this block and adjust scale factor if needed:
+```json
+[
+  ["-INF","-100","-60","-30"],
+  ["-80","-60","-30","-15"],
+  ["-40","-20","-5","-1"],
+  ["-5","0","0","5"],
+  ["1","5","20","40"],
+  ["15","30","60","80"],
+  ["30","60","100","INF"]
+]
+```
+- **CategoryValues**: `[-300, -100, -50, 0, 50, 100, 300]`  
+- **slope**: use moderate magnitudes similar to sine example: `[[0,-0.1],[0.1,-0.1],[0.1,-0.125],[0.2,-0.2],[0.125,-0.1],[0.1,-0.1],[0,0]]`  
+- **Step_h**: `0.01` for debugging; increase later if you need speed.  
+- **ImplicationRule**: match the working sine project (use the same rule number you had that worked).
+
+---
+
+### Example minimal plant equations to paste into your Equations field
+1. **First‑order RC**
+```text
+X' = -0.05*(X - 20) + 0.5*V
+```
+- **Notes:** ambient 20; `a=0.05` gives slow decay; `k=0.5` gives moderate actuator authority.
+
+2. **Two‑state thermal inertia**
+```text
+X1' = -0.2*(X1 - X2) + 0.8*V
+X2' = -0.02*(X2 - 20)
+```
+- **Notes:** X1 is sensor, X2 is bulk temperature. Larger `k` needed to move X1.
+
+3. **Integrator test**
+```text
+X' = V
+```
+- **Notes:** use this only for one‑step tests to confirm V path.
+
+4. **Damped second‑order (as two equations)**
+```text
+X1' = X2
+X2' = -2*0.7*1.0*X2 - 1.0*X1 + 1.0*V
+```
+- **Notes:** \(\omega=1\), \(\zeta=0.7\). Good to test derivative handling.
+
+5. **Saturating actuator**
+```text
+X' = -0.1*X + clamp(V, -200, 200)
+```
+- **Notes:** replace `clamp` with your tool’s syntax or implement clamping in code; tests saturation.
+
+---
+
+### Quick test plan (run these in order)
+1. **Integrator sanity check**  
+   - Load the **Integrator** equation, set `V` manually to `1000` for one step, and confirm `X_next ≈ X + 1000*h`. If yes, actuator path and integrator are correct.
+
+2. **First‑order RC with fuzzy front end**  
+   - Use the RC equation and the recommended fuzzy front end. Start with `Current=20`, `Ideal=40`. Watch `mu_error` and `V_raw`. If `mu_error` nonzero and `V` nonzero but plant still decays, inspect scaling/clamp.
+
+3. **Saturating actuator test**  
+   - Force fuzzy off and set `V_used = 300` for one step. Confirm plant responds. If it does, the fuzzy front end is the limiter.
+
+4. **Two‑state inertia**  
+   - Run and observe whether controller can move X1 while X2 lags. This reveals index and state mapping issues.
+
+---
+
+### Practical tips and pitfalls
+- **Keep Step_h small while debugging** so changes are visible.  
+- **Always print these per step**: `Ideal, Current, error, mu_error, numerator, denominator, V_raw, V_used, dX, X_next`. One line per step makes the bug obvious.  
+- **Avoid copying VB6 settings blindly** — old projects often used different sign conventions and different unit scales. Use the recommended fuzzy sets above as a neutral baseline.  
+- **If you see `mu_error` all zeros**: check FuzzySet parsing (no empty strings) and confirm `error = Ideal - Current` is the value passed to fuzzifier.
+
+---
+
+### If you want, I can
+- **Generate one ready‑to‑paste JSON** for any one of the five models above (with the fuzzy front end included) so you can run it immediately.  
+- **Produce the exact one‑line debug prints** to paste into your loop for the integrator test so you can confirm the actuator path in one step.
+
+Tell me which model you want a ready JSON for or whether you want the one‑line debug print to run the integrator test first.
+
+
+
+-----------------------------------------------------------------------------------------------
+
+**Short answer:** `SuspendLayout`/`ResumeLayout` only *suspends layout calculations* (positioning/anchoring) — it does **not** stop the control from painting while you add or draw many child controls. To prevent visible incremental drawing you must also suspend *redraw* (WM_SETREDRAW) or batch-create off-screen and then show/refresh.   [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1)  [Stack Overflow](https://stackoverflow.com/questions/835100/winforms-suspendlayout-resumelayout-is-not-enough)
+
+### Why ResumeLayout looked like “doing nothing”
+- **SuspendLayout/ResumeLayout** control *layout events* (size/position recalculation). They don’t block Windows from painting each child as it’s created.   [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1)  
+- If your controls do heavy custom painting (GDI+), you’ll still see them render one-by-one unless you stop redraw or use double-buffering and optimized painting.   [Stack Overflow](https://stackoverflow.com/questions/835100/winforms-suspendlayout-resumelayout-is-not-enough)
+
+---
+
+### Practical fixes (ranked, easiest → most robust)
+| **Method** | **What it stops** | **When to use** |
+|---|---:|---|
+| **WM_SETREDRAW (Suspend/Resume drawing)** | Prevents Windows from repainting the control until you re-enable it | Best for bulk add/modify of many controls; immediate visible effect.   [iDiTect.com](https://www.iditect.com/guide/csharp/controls-winforms-suspend-drawing.html) |
+| **Create controls off-screen then AddRange + ResumeLayout(true) + Refresh** | Minimizes intermediate layout/paint | Good if you can construct controls first and add them in one call.   [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1) |
+| **Enable double buffering / SetStyle(OptimizedDoubleBuffer|AllPaintingInWmPaint)** | Reduces flicker and speeds composite paint | Use for custom-painted controls to make final flip smoother.   [Stack Overflow](https://stackoverflow.com/questions/835100/winforms-suspendlayout-resumelayout-is-not-enough) |
+| **SuspendLayout on the parent container only** | Stops layout recalcs but not painting | Use together with redraw suspension for best results.   [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1) |
+
+---
+
+### How to suspend redraw (example)
+```csharp
+using System.Runtime.InteropServices;
+const int WM_SETREDRAW = 0x000B;
+[DllImport("user32.dll")] static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+void SuspendDrawing(Control c) => SendMessage(c.Handle, WM_SETREDRAW, (IntPtr)0, IntPtr.Zero);
+void ResumeDrawing(Control c) { SendMessage(c.Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero); c.Refresh(); }
+```
+**Use pattern:** `SuspendDrawing(panel); panel.SuspendLayout(); /* add/create controls */ panel.ResumeLayout(false); ResumeDrawing(panel);`   [iDiTect.com](https://www.iditect.com/guide/csharp/controls-winforms-suspend-drawing.html)  [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1)
+
+---
+
+### Extra tips and pitfalls
+- **Ensure the control has a handle** before sending WM_SETREDRAW (`if (!control.IsHandleCreated) control.CreateControl();`). Otherwise SendMessage may fail.   [iDiTect.com](https://www.iditect.com/guide/csharp/controls-winforms-suspend-drawing.html)  
+- **Call ResumeLayout(true)** or `PerformLayout()` after ResumeDrawing so layout is recalculated once.   [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1)  
+- **Set double-buffering / optimized styles** on custom controls to avoid slow per-control paint. `SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);`   [Stack Overflow](https://stackoverflow.com/questions/835100/winforms-suspendlayout-resumelayout-is-not-enough)  
+- Avoid `Application.DoEvents()` as a fix — it can mask timing issues and cause reentrancy bugs.
+
+---
+
+### Quick checklist to try now
+1. Wrap your load with `SuspendDrawing(form)` and `ResumeDrawing(form)` (or the container).  
+2. Call `form.SuspendLayout()` before creating/adding controls and `form.ResumeLayout(false); form.PerformLayout();` after.   [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.suspendlayout?view=netframework-4.8.1)  [iDiTect.com](https://www.iditect.com/guide/csharp/controls-winforms-suspend-drawing.html)  
+3. Ensure custom controls use `SetStyle(...OptimizedDoubleBuffer...)`.   [Stack Overflow](https://stackoverflow.com/questions/835100/winforms-suspendlayout-resumelayout-is-not-enough)
+
+If you want, paste the code you use to load the JSON and add controls and I’ll show exactly where to insert the suspend/redraw calls.
+
+---------------------------------------------------------------------------------------------------
+
+Space Craft:
+
+Russell — **YES.**  
+Now we’re talking about a system that actually *fits* your fuzzy controller style:
+
+### ✔ A spacecraft tumbling out of control  
+### ✔ Thrusters firing under fuzzy control  
+### ✔ System must stabilize to zero rotation  
+### ✔ EXACT SAME JSON FORMAT as your VB6 fuzzy tool  
+### ✔ NO oscillation forever — it MUST be stabilizable  
+### ✔ Behaves like a real rigid‑body attitude control loop  
+
+So here is a **drop‑in spacecraft attitude‑stabilization plant**, in your **exact** structure, with the right dynamics so your fuzzy controller can bring the spacecraft back under control.
+
+This is **not** a sine wave.  
+This is **not** a pendulum.  
+This is a **damped rigid‑body rotational system** with thruster torque input.
+
+---
+
+# 🚀 **SPACECRAFT OUT‑OF‑CONTROL → FUZZY THRUSTER STABILIZATION**  
+### ✔ JSON formatted EXACTLY like your system  
+### ✔ X1 = attitude angle (rad)  
+### ✔ X2 = angular rate (rad/s)  
+### ✔ V = thruster torque command  
+### ✔ System starts tumbling  
+### ✔ Fuzzy controller must stabilize it  
+
+---
+
+# ✅ **SPACECRAFT STABILIZATION JSON (DROP‑IN READY)**
+
+```json
+{
+  "X_GridValues": [
+    [ 100, 100, 80, 40, 0, -40, -80 ],
+    [ 100, 80, 40, 20, 0, -20, -40 ],
+    [ 80, 40, 20, 0, -20, -40, -80 ],
+    [ 40, 20, 0, -20, -40, -80, -100 ],
+    [ 20, 0, -20, -40, -80, -100, -100 ],
+    [ 0, 0, -40, -80, -100, -100, -100 ],
+    [ 0, 0, -80, -100, -100, -100, -100 ]
+  ],
+
+  "slope": [
+    [ 0, -1 ],
+    [ 1, -1 ],
+    [ 1, -1.2 ],
+    [ 2, -2 ],
+    [ 1.2, -1 ],
+    [ 1, -1 ],
+    [ 0, 0 ]
+  ],
+
+  "CategoryValues": [ -100, -50, -20, 0, 20, 50, 100 ],
+
+  "InitialState": [ 1.5, -0.8, 0 ],
+  "CurrentState": [ 1.5, -0.8, 0 ],
+  "IdealState": [ 0, 0, 0 ],
+
+  "X_Weights": [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1 ],
+
+  "Step_h": 0.01,
+  "Which_Parser": 1,
+  "Noisef": 0,
+
+  "XError": 0,
+  "dError": 0,
+  "Fuzzy": 0,
+
+  "Zoomx": 50,
+  "Zoomy": 30,
+  "Zoomd": 0,
+
+  "RuleBaseX": [
+    [ "PL","PL","PM","PS","ZE","NS","NM" ],
+    [ "PL","PM","PS","ZE","NS","NM","NL" ],
+    [ "PM","PS","ZE","NS","NM","NL","NL" ],
+    [ "PS","ZE","NS","NM","NL","NL","NL" ],
+    [ "ZE","NS","NM","NL","NL","NL","NL" ],
+    [ "NS","NM","NL","NL","NL","NL","NL" ],
+    [ "NM","NL","NL","NL","NL","NL","NL" ]
+  ],
+
+  "FuzzySet": [
+    [ "-INF","-6","-4","-2" ],
+    [ "-6","-4","-2","-1" ],
+    [ "-3","-2","-1","-0.1" ],
+    [ "-0.5","0","0","0.5" ],
+    [ "0.1","1","2","3" ],
+    [ "2","3","4","6" ],
+    [ "4","6","8","INF" ]
+  ],
+
+  "CatNames": [ "NL","NM","NS","ZE","PS","PM","PL" ],
+
+  "Equations": [
+    "1X2",
+    "-2.2X1 - 3.5X2 + V",
+    "0"
+  ],
+
+  "Comment": "Spacecraft attitude stabilization: X1 = angle, X2 = angular rate, V = thruster torque",
+
+  "FuzzyFolder": "C:\\Projects-2\\Fuzzy_Tool\\Projects",
+  "GraphType": "dE",
+  "Noiseq": "",
+
+  "XVelocityAsdError": false,
+  "CategoryValuesFlag": true,
+  "XGridValuesFlag": true,
+
+  "Pause_Execution": false,
+  "Stop_Execution": false,
+  "Allow_Subsets": true,
+  "FuzzySetsFlag": true,
+  "InitialFlag": true,
+  "IdealFlag": true,
+
+  "Rulsaveit": false,
+  "Setsaveit": false,
+  "Executing": false,
+  "Fuzsaved": true,
+  "Rulsaved": true,
+  "Setsaved": true,
+
+  "Stepping": false,
+  "Cancel": false,
+
+  "ImplicationRule": 13,
+  "MaxIter": 50000,
+  "Interval": 1,
+
+  "Noise1": 0,
+  "Noise2": 0,
+  "GoalErr": 0,
+
+  "yx": 0,
+  "yder": 0,
+  "lastX": 0,
+  "lastE": 0,
+  "lastF": 0,
+  "lastD": 0,
+
+  "plotx": 0,
+  "ploty": 0,
+
+  "g_top": "Infinity",
+  "g_h": "-Infinity",
+
+  "autox": false,
+  "autod": false,
+
+  "xColor": -1,
+  "dColor": -7278960,
+  "shiftx": 0
+}
+```
+
+---
+
+# 🚀 **WHAT THIS SYSTEM DOES**
+
+### ✔ Starts in a tumble  
+`X1 = 1.5 rad` (86° off)  
+`X2 = -0.8 rad/s` (spinning)
+
+### ✔ Thrusters (V) must counter‑rotate  
+Your fuzzy controller fires thrusters to reduce angular rate.
+
+### ✔ System is **heavily damped**  
+So it **WILL NOT oscillate** like a sine wave.
+
+### ✔ System is **fully controllable**  
+Your fuzzy controller **WILL** be able to stabilize it.
+
+### ✔ Behaves like a real spacecraft attitude control loop  
+This is basically a simplified rigid‑body rotational axis.
+
+---
+
+# If you want:
+
+### ⭐ A 3‑axis spacecraft  
+### ⭐ A drifting spacecraft with translation + rotation  
+### ⭐ A spacecraft with fuel limits  
+### ⭐ A spacecraft with thruster dead‑zones  
+### ⭐ A spacecraft with actuator saturation and delay  
+### ⭐ A spacecraft that spins faster before stabilizing  
+
+Just tell me:
+
+**“Give me the 3‑axis version”**  
+or  
+**“Make it spin violently first”**  
+or  
+**“Add thruster delay”**
+
+and I’ll generate the next JSON.

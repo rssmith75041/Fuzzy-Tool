@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="FuzzyGraph.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="FuzzySetGraph.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_About_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Categories_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_Firing_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Graph_D_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Graph_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Graph_F_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Ideal_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Implication_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Initial_And_Ideal_States.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Initial_State_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_Main_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_Comments_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_Control_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_WorkSpace_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Equation_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Map_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Noise_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Rule_Base_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Rule_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Set_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Set_Graph_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_System_Configuration_Setup_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_System_Values_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_Test_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Turtle\Fuzzy_Turtle_Data_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Turtle\Fuzzy_Turtle_Pad_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Values_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Old-Code\Fuzzy_Variables_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Fuzzy_X_Weights.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TestParserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
