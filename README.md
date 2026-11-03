@@ -13,10 +13,6 @@ To help explore these ideas, my friend and I developed a software tool that allo
 
 Over the years that original software evolved through multiple revi-sions, experimenting with different approaches to fuzzification, rule evaluation, and defuzzification. Decades later, after revisiting the project and modernizing portions of the original implementa-tion, I found myself once again exploring the same fundamental questions that first sparked my interest in fuzzy systems.
 
-This book is not intended to be a comprehensive academic treat-ment of fuzzy logic. Entire libraries already exist for that purpose. Instead, this book serves as a practical introduction written from the perspective of someone who learned fuzzy logic by building it.
+This project is not intended to be a comprehensive academic treat-ment of fuzzy logic. Entire libraries already exist for that purpose. Instead, this project serves as a practical introduction written from the perspective of someone who learned fuzzy logic by building it.
 
-The goal is to understand what fuzzy logic is, why it works, and how it can be implemented in software. We will examine fuzzy sets, membership functions, rule bases, inference systems, and defuzzi-fication methods. Along the way, we will compare concepts with working examples and focus on developing an intuitive under-standing before introducing implementation details.
-
-If you can understand how people make decisions using terms such as "a little," "somewhat," or "very," then you already under-stand the foundation upon which fuzzy logic is built.
-
-The rest of this book is simply the process of turning that human intuition into a system that a computer can use.
+The goal is to understand what fuzzy logic is, why it works, and how it can be implemented in software. If you can understand how people make decisions using terms such as "a little," "somewhat," or "very," then you already under-stand the foundation upon which fuzzy logic is built.
