@@ -1,0 +1,311 @@
+{
+  "X_GridValues": [
+    [
+      100,
+      100,
+      100,
+      100,
+      50,
+      0,
+      0
+    ],
+    [
+      100,
+      100,
+      100,
+      100,
+      50,
+      0,
+      0
+    ],
+    [
+      100,
+      50,
+      50,
+      20,
+      0,
+      -50,
+      -50
+    ],
+    [
+      100,
+      50,
+      50,
+      0,
+      -20,
+      -50,
+      -50
+    ],
+    [
+      100,
+      50,
+      50,
+      -20,
+      -50,
+      -50,
+      -50
+    ],
+    [
+      100,
+      100,
+      100,
+      -100,
+      -100,
+      -100,
+      -100
+    ],
+    [
+      100,
+      100,
+      100,
+      -100,
+      -100,
+      -100,
+      -100
+    ]
+  ],
+  "slope": [
+    [
+      0,
+      -1
+    ],
+    [
+      1,
+      -1
+    ],
+    [
+      1,
+      -1.1111112
+    ],
+    [
+      2,
+      -2
+    ],
+    [
+      1.1111112,
+      -1
+    ],
+    [
+      1,
+      -1
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "CategoryValues": [
+    -100,
+    -50,
+    -20,
+    0,
+    20,
+    50,
+    100
+  ],
+  "InitialState": [
+    5,
+    0,
+    21
+  ],
+  "CurrentState": [
+    5,
+    0,
+    21.77
+  ],
+  "IdealState": [
+    0,
+    1,
+    0
+  ],
+  "X_Weights": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "Step_h": 0.01,
+  "Which_Parser": 0,
+  "Noisef": 10,
+  "XError": 0,
+  "dError": 0,
+  "Fuzzy": 0,
+  "Zoomx": 50,
+  "Zoomy": 30,
+  "Zoomd": 0,
+  "RuleBaseX": [
+    [
+      "PL",
+      "PL",
+      "PL",
+      "PL",
+      "PM",
+      "ZE",
+      "ZE"
+    ],
+    [
+      "PL",
+      "PL",
+      "PL",
+      "PL",
+      "PM",
+      "ZE",
+      "ZE"
+    ],
+    [
+      "PL",
+      "PM",
+      "PM",
+      "PS",
+      "ZE",
+      "NM",
+      "NM"
+    ],
+    [
+      "PL",
+      "PM",
+      "PM",
+      "ZE",
+      "NS",
+      "NM",
+      "NM"
+    ],
+    [
+      "PL",
+      "PM",
+      "PM",
+      "NS",
+      "NM",
+      "NM",
+      "NM"
+    ],
+    [
+      "PL",
+      "PL",
+      "PL",
+      "NL",
+      "NL",
+      "NL",
+      "NL"
+    ],
+    [
+      "PL",
+      "PL",
+      "PL",
+      "NL",
+      "NL",
+      "NL",
+      "NL"
+    ]
+  ],
+  "FuzzySet": [
+    [
+      "-INF",
+      "-5",
+      "-4",
+      "-3"
+    ],
+    [
+      "-5",
+      "-4",
+      "-3",
+      "-2"
+    ],
+    [
+      "-3",
+      "-2",
+      "-1",
+      "-.1"
+    ],
+    [
+      "-.5",
+      "0",
+      "0",
+      ".5"
+    ],
+    [
+      ".1",
+      "1",
+      "2",
+      "3"
+    ],
+    [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    [
+      "4",
+      "5",
+      "6",
+      "INF"
+    ]
+  ],
+  "CatNames": [
+    "NL",
+    "NM",
+    "NS",
+    "ZE",
+    "PS",
+    "PM",
+    "PL"
+  ],
+  "Equations": [
+    "1X2",
+    "-1X1-0.5X2+V",
+    "21.77"
+  ],
+  "FuzzyFolder": "C:\\Projects-2\\Fuzzy_Tool\\Projects",
+  "GraphType": "dE",
+  "Comment": "This -0.1X2+V, make GoalErr = 0 or somewhere around here, 0.00001, etc.",
+  "Noiseq": "",
+  "XVelocityAsdError": false,
+  "CategoryValuesFlag": true,
+  "XGridValuesFlag": true,
+  "Pause_Execution": false,
+  "Stop_Execution": true,
+  "Allow_Subsets": true,
+  "FuzzySetsFlag": true,
+  "InitialFlag": true,
+  "IdealFlag": true,
+  "Rulsaveit": false,
+  "Setsaveit": false,
+  "Executing": false,
+  "Fuzsaved": true,
+  "Rulsaved": true,
+  "Setsaved": true,
+  "Stepping": false,
+  "Cancel": false,
+  "ImplicationRule": 13,
+  "MaxIter": 0,
+  "Interval": 1,
+  "Noise1": -1,
+  "Noise2": -1,
+  "GoalErr": -1000,
+  "yx": 0,
+  "yder": 0,
+  "lastX": 0,
+  "lastE": 0,
+  "lastF": 0,
+  "lastD": 0,
+  "plotx": 0,
+  "ploty": 0,
+  "g_top": "Infinity",
+  "g_h": "-Infinity",
+  "autox": false,
+  "autod": false,
+  "xColor": -1,
+  "dColor": -7278960,
+  "shiftx": 0
+}
